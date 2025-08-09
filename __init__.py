@@ -37,10 +37,16 @@ __plugin_meta__ = PluginMetadata(
     description="哈基米音乐播放插件",
     usage="""
     命令列表：
-    /哈基米歌单 - 随机展示30首可播放的音乐（每次随机）
+    /哈基米帮助 - 查看帮助/指令列表
+    /哈基米歌单 - 随机展示30首可播放的音乐
     /哈基米点歌 <序号> - 播放指定序号的音乐（并计入排行榜）
+    /来首哈基米 - 随机播放一首音乐（别名：随机哈基米、给我来首哈基米）
+    /哈基米搜索 <关键词或正则或ID> - 搜索乐曲（最多返回10条）
     /哈基米排行榜 [页码] - 查看排行榜（每页30条，默认第1页）
-    /哈基米搜索 <关键词或正则或ID> - 搜索乐曲（最多返回10条贴近结果）
+    /重载哈基米歌单 - 重新扫描音乐文件（管理员）
+    /开启哈基米推送 - 开启每日定时推送（管理员）
+    /关闭哈基米推送 - 关闭每日定时推送（管理员）
+    /测试哈基米 - 插件自检
     """,
     config=Config,
 )
@@ -655,6 +661,24 @@ async def handle_search(bot: Bot, event: GroupMessageEvent):
         result_text += "\n⚠️ 建议安装 pypinyin 以强化拼音与首字母匹配：pip install pypinyin"
 
     await hachimi_search.finish(result_text)
+
+# 哈基米帮助
+hachimi_help = on_command("哈基米帮助", aliases={"hachimi_help", "哈基米菜单", "哈基米指令", "帮助"}, priority=5, block=True)
+
+@hachimi_help.handle()
+async def handle_help(bot: Bot, event: GroupMessageEvent):
+    lines: List[str] = [
+        "📖 哈基米帮助/指令列表",
+        "/哈基米帮助 - 查看帮助/指令列表",
+        "/哈基米歌单 - 随机展示30首可播放的音乐",
+        "/哈基米点歌 <序号> - 播放指定序号的音乐（并计入排行榜）",
+        "/来首哈基米 - 随机播放一首音乐（别名：随机哈基米、给我来首哈基米）",
+        "/哈基米搜索 <关键词或正则或ID> - 搜索乐曲（最多返回10条）",
+        "/哈基米排行榜 [页码] - 查看排行榜（每页30条，默认第1页）",
+        "/开启哈基米推送 - 开启每日定时推送（管理员）",
+        "/关闭哈基米推送 - 关闭每日定时推送（管理员）",
+        ""]
+    await hachimi_help.finish("\n".join(lines))
 
 # 添加一个简单的测试命令
 test_cmd = on_command("测试哈基米", priority=5, block=True)
